@@ -6,14 +6,13 @@ import java.util.HashMap;
 
 public class Convertor {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		HashMap<Integer, Unite> tab = new HashMap<Integer, Unite>();
+	private HashMap<Integer, Unite> tab;
 
-	//Unite definition	
+	public Convertor() {
+		
+		tab = new HashMap<Integer, Unite>();
+
+		//Unite definition	
 		
 		//Length, Metric
 		Unite metre = new Unite("metre", Systeme.Metrique, Categorie.Longueur);
@@ -28,7 +27,6 @@ public class Convertor {
 		Unite kms = new Unite("kilometre/seconde", Systeme.Metrique, Categorie.Vitesse);
 		Unite mms = new Unite("milimetre/seconde", Systeme.Metrique, Categorie.Vitesse);
 		Unite microms = new Unite("micrometre/seconde", Systeme.Metrique, Categorie.Vitesse);
-		Unite mh = new Unite("metre/heure", Systeme.Metrique, Categorie.Vitesse);
 		Unite kmh = new Unite("kilometre/heure", Systeme.Metrique, Categorie.Vitesse);
 		//Mass, Metric
 		Unite tonne = new Unite("tonne", Systeme.Metrique, Categorie.Poids);
@@ -49,8 +47,6 @@ public class Convertor {
 		Unite dm2 = new Unite("decimetre carre", Systeme.Metrique, Categorie.Superficie);
 		Unite cm2 = new Unite("centimetre carre", Systeme.Metrique, Categorie.Superficie);
 		Unite mm2 = new Unite("millimetre carre", Systeme.Metrique, Categorie.Superficie);
-		Unite microm2 = new Unite("micrometre carre", Systeme.Metrique, Categorie.Superficie);
-		Unite nm2 = new Unite("nanometre carre", Systeme.Metrique, Categorie.Superficie);
 		//volume, Metric
 		Unite km3 = new Unite("kilometre cube",Systeme.Metrique, Categorie.Volume);
 		Unite m3 = new Unite("metre cube",Systeme.Metrique, Categorie.Volume);
@@ -63,7 +59,6 @@ public class Convertor {
 		Unite cm3 = new Unite("centimetre cube",Systeme.Metrique, Categorie.Volume);
 		Unite ml = new Unite("millilitre",Systeme.Metrique, Categorie.Volume);
 		Unite mm3 = new Unite("millimetre cube",Systeme.Metrique, Categorie.Volume);
-		Unite microl = new Unite("microlitre",Systeme.Metrique, Categorie.Volume);
 		//Temperature, Metric
 		Unite degreC = new Unite("degre celsius", Systeme.Metrique, Categorie.Temperature);
 		Unite degreF = new Unite("degre fareinheit", Systeme.Metrique, Categorie.Temperature);
@@ -287,57 +282,45 @@ public class Convertor {
 		tab.put(72, degreK);
 		tab.put(73, degreF);
 		
-		// Test Unitaire
-		convert(tab);
-		
 	}
 	
-	public static void convert(HashMap<Integer, Unite> tab)
-	{
-		int a, b;
-		for(a=1; a <= tab.size(); a++)
-		{
-			for(b=1; b <= tab.size(); b++)
+	public Object convert(int source, int target, double value) {
+		if(tab.containsKey(source) && tab.containsKey(target)) {
+			if(tab.get(source).getCategorie() == tab.get(target).getCategorie())
 			{
-				if(tab.get(a).getCategorie() == tab.get(b).getCategorie())
+				Unite ref = null;
+				if(tab.get(source).getCategorie() == Categorie.Longueur) 
 				{
-					Unite ref = null;
-					if(tab.get(a).getCategorie() == Categorie.Longueur) 
-					{
-						ref = tab.get(2);
-					}
-					else if(tab.get(a).getCategorie() == Categorie.Vitesse)
-					{
-						ref = tab.get(20);
-					}
-					else if(tab.get(a).getCategorie() == Categorie.Poids)
-					{
-						ref = tab.get(32);
-					}
-					else if(tab.get(a).getCategorie() == Categorie.Superficie)
-					{
-						ref = tab.get(50);
-					}
-					else if(tab.get(a).getCategorie() == Categorie.Volume)
-					{
-						ref = tab.get(58);
-					}
-					else if(tab.get(a).getCategorie() == Categorie.Temperature)
-					{
-						ref = tab.get(71);
-					}
-					else
-						ref = tab.get(2);
-					
-					Object retour = tab.get(a).convert(tab.get(b), 10, ref);
-					System.out.println("Convertion de 10 " + tab.get(a).getNom() + " en " + tab.get(b).getNom());
-					if(!retour.equals(false))
-						System.out.println("RŽsultat : " + retour);
-					else
-						System.out.println("Convertion impossible");
+					ref = tab.get(2);
 				}
+				else if(tab.get(source).getCategorie() == Categorie.Vitesse)
+				{
+					ref = tab.get(20);
+				}
+				else if(tab.get(source).getCategorie() == Categorie.Poids)
+				{
+					ref = tab.get(32);
+				}
+				else if(tab.get(source).getCategorie() == Categorie.Superficie)
+				{
+					ref = tab.get(50);
+				}
+				else if(tab.get(source).getCategorie() == Categorie.Volume)
+				{
+					ref = tab.get(58);
+				}
+				else if(tab.get(source).getCategorie() == Categorie.Temperature)
+				{
+					ref = tab.get(71);
+				}
+				else
+					ref = tab.get(2);
+				
+				return new Double(tab.get(source).convert(tab.get(target), value, ref).toString());
 			}
+			return false;
 		}
+		return false;
 	}
 
 }
